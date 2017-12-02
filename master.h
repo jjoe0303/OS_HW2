@@ -3,6 +3,7 @@
 
 #include "mail.h"
 
-void ConstructMail(char dirname[],struct mail_t mail[],char word[],int *mailsize);
+void ConstructMail(char dirname[],struct mail_t mail[],char word[],
+                   int *mailsize);
 
 #endif
