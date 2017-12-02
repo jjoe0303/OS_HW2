@@ -1,8 +1,11 @@
 #ifndef MAIL_H
 #define MAIL_H
 
+#include <stdio.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <string.h>
 #include "module/def.h"
-
 struct mail_t {
 	union {
 		char query_word[32];
