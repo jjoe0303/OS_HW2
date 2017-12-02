@@ -1,38 +1,37 @@
 #include "master.h"
 
-int main(int argc, char **argv){
-    int ch;                      
-    char ec;                              
-    char *word;
-    char *dirname;
-    char slaves[4096];
-    sprintf(slaves,"%s","2");
-    while((ch = getopt(argc, argv, ":q:d:s:")) != -1)
-    {
-        switch(ch)
-        {
-            case 'q':
-                word = optarg;
-                printf("Query_word=%s\n",word);
-                break;
-            case 'd':
-                dirname = optarg;
-                printf("Directory=%s\n",dirname);
-                break;
-            case 's':
-                sprintf(slaves,"%s",optarg); 
-                break;
-            case '?':
-                ec = (char)optopt;
-                printf("Invalid argument\'%c\'!\n", ec);
-                break;
-            case ':':
-                printf("lack of parameter!\n");
-                break;
-        }
-    }
-    printf("Num of slaves=%s\n", slaves);
-    return 0;
+int main(int argc, char **argv)
+{
+	int ch;
+	char ec;
+	char *word;
+	char *dirname;
+	char slaves[4096];
+	sprintf(slaves,"%s","2");
+	while((ch = getopt(argc, argv, ":q:d:s:")) != -1) {
+		switch(ch) {
+		case 'q':
+			word = optarg;
+			printf("Query_word=%s\n",word);
+			break;
+		case 'd':
+			dirname = optarg;
+			printf("Directory=%s\n",dirname);
+			break;
+		case 's':
+			sprintf(slaves,"%s",optarg);
+			break;
+		case '?':
+			ec = (char)optopt;
+			printf("Invalid argument\'%c\'!\n", ec);
+			break;
+		case ':':
+			printf("lack of parameter!\n");
+			break;
+		}
+	}
+	printf("Num of slaves=%s\n", slaves);
+	return 0;
 
 }
 
