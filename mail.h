@@ -6,6 +6,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include "module/def.h"
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <signal.h>
+
 struct mail_t {
 	union {
 		char query_word[32];

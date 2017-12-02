@@ -31,7 +31,25 @@ int main(int argc, char **argv)
 		}
 	}
 	printf("Num of slaves=%s\n", slaves);
-	return 0;
+    int num = atoi(slaves);
+    int pid[num];
+    int i;
+    for(i=0;i<num;++i){
+        pid[i]=fork();
+        if(pid[i]==0){
+            execl("./slave","slave","executed by execl",NULL);
+        }
+    }
+    char k[20];
+    while(1){
+        scanf("%s",&k);
+        if(strcmp(k,"kill")==0){
+            for(i=0;i<num;++i){
+                kill(pid[i],SIGTERM);
+            }
+        }   
+    };
+    return 0;
 
 }
 
