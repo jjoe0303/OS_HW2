@@ -1,9 +1,10 @@
 #include "slave.h"
 
-int main(int argc, char **argv){
-    printf("slave start ...\n");
-    while(1){};
-    return 0;
+int main(int argc, char **argv)
+{
+	printf("slave start ...\n");
+	while(1) {};
+	return 0;
 }
 
 //int send_to_fd(int sysfs_fd, struct mail_t *mail)
