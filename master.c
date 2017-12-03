@@ -95,7 +95,7 @@ void ConstructMail(char dirname[],struct mail_t mail[],char word[],
 			//memset(base,'\0',sizeof(base));
 			sprintf(subdir,"%s",dirname);
 			sprintf(subdir,"%s%s/",subdir,filename->d_name);
-            printf("subdir=%s\n",subdir);
+			printf("subdir=%s\n",subdir);
 			ConstructMail(subdir,mail,word,mailsize);
 			// printf("%s\n",base);
 		}
