@@ -29,7 +29,7 @@ struct mailbox_entry_t {
 	union {
 		char query_word[32];
 		unsigned int word_count;
-	} data
+	} data;
 	char file_path[4096];
 	struct list_head entry;
 };

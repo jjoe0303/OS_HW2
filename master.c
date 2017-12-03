@@ -18,6 +18,9 @@ int main(int argc, char **argv)
 		case 'd':
 			//dirname = optarg;
 			sprintf(dirname,"%s",optarg);
+            if(dirname[strlen(dirname)-1] != '/'){
+                sprintf(dirname,"%s%c",dirname,'/');
+            }
 			printf("Directory=%s\n",dirname);
 			break;
 		case 's':
@@ -40,6 +43,7 @@ int main(int argc, char **argv)
 	struct  mail_t mail[1024];
 	int *mailsize;
 	int size = 0;
+    int sysfs_fd;
 	mailsize = &size;
 	ConstructMail(dirname,mail,word,mailsize);
 	printf("size=%d\n",size);
@@ -56,7 +60,12 @@ int main(int argc, char **argv)
 	}
 	while(1) {
 		scanf("%s",&k[0]);
-		if(strcmp(k,"kill")==0) {
+		if(strcmp(k,"s")==0){
+            send_to_fd(sysfs_fd,mail);
+        }
+        
+        
+        if(strcmp(k,"kill")==0) {
 			for(i=0; i<num; ++i) {
 				kill(pid[i],SIGTERM);
 			}
@@ -106,28 +115,30 @@ void ConstructMail(char dirname[],struct mail_t mail[],char word[],
 
 }
 
-//int send_to_fd(int sysfs_fd, struct mail_t *mail)
-//{
-//    /*
-//     * write something or nothing
-//     */
-//
-//    int ret_val = write(sysfs_fd, ...);
-//    if (ret_val == ERR_FULL) {
-//        /*
-//         * write something or nothing
-//         */
-//    } else {
-//        /*
-//         * write something or nothing
-//         */
-//    }
-//
-//    /*
-//     * write something or nothing
-//     */
-//}
-//
+int send_to_fd(int sysfs_fd, struct mail_t *mail)
+{
+    /*
+     * write something or nothing
+     */
+    sysfs_fd=open("./module/mailbox.c",O_RDWR);
+    char *d= "hello world!";
+    int ret_val = write(sysfs_fd,d,strlen(d));
+    //int ret_val = write(sysfs_fd,mail,sizeof(struct mail_t));
+    if (ret_val == ERR_FULL) {
+        /*
+         * write something or nothing
+         */
+    } else {
+        /*
+         * write something or nothing
+         */
+    }
+
+    /*
+     * write something or nothing
+     */
+}
+
 //int receive_from_fd(int sysfs_fd, struct mail_t *mail)
 //{
 //    /*
