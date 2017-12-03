@@ -3,4 +3,6 @@
 
 #include "mail.h"
 
+void Searchword(char path[],char word[],unsigned int *count);    
+
 #endif

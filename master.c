@@ -37,7 +37,7 @@ int main(int argc, char **argv)
 	int pid[num];
 	int i;
 	char k[20];
-	struct  mail_t mail[50];
+	struct  mail_t mail[1024];
 	int *mailsize;
 	int size = 0;
 	mailsize = &size;
@@ -87,14 +87,15 @@ void ConstructMail(char dirname[],struct mail_t mail[],char word[],
 		if(strcmp(filename->d_name,".")==0 || strcmp(filename->d_name,"..")==0)
 			continue;
 		else if(filename->d_type != 4) {
-			sprintf(mail[*mailsize].file_path,"%s/%s",dirname,filename->d_name);
+			sprintf(mail[*mailsize].file_path,"%s%s",dirname,filename->d_name);
 			printf("mailsize=%d , filepath=%s\n",*mailsize,mail[*mailsize].file_path);
 			sprintf(mail[*mailsize].data.query_word,"%s",word);
 			*mailsize=*mailsize+1;
 		} else if(filename->d_type == 4) {
 			//memset(base,'\0',sizeof(base));
 			sprintf(subdir,"%s",dirname);
-			sprintf(subdir,"%s/%s",subdir,filename->d_name);
+			sprintf(subdir,"%s%s/",subdir,filename->d_name);
+            printf("subdir=%s\n",subdir);
 			ConstructMail(subdir,mail,word,mailsize);
 			// printf("%s\n",base);
 		}

@@ -11,7 +11,7 @@
 #include <sys/wait.h>
 #include <sys/stat.h>
 #include <signal.h>
-
+#include <ctype.h>
 struct mail_t {
 	union {
 		char query_word[32];
