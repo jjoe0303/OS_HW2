@@ -17,6 +17,11 @@ int main(int argc, char **argv)
 
 void Searchword(char path[],char word[],unsigned int *count)
 {
+	int i;
+	char lower[32];
+	for(i=0; i<32; ++i) {
+		lower[i]=tolower(word[i]);
+	}
 	FILE *fin;
 	char character;
 	char nowword[20];
@@ -24,15 +29,17 @@ void Searchword(char path[],char word[],unsigned int *count)
 	fin = fopen(path,"r");
 	//printf("yaya\n");
 	while(fscanf(fin,"%c",&character)!=EOF) {
-		if(character== ' ' || character== '\n' || character== '\t') {
+		character = tolower(character);
+		if(character== ' ' || character== '\n' || character== '\t'|| character=='.'
+		   || character==','||character == '!'|| character=='?') {
+			if(strcmp(nowword,word)==0) {
+				*count=*count+1;
+			}
 			memset(nowword,'\0',sizeof(nowword));
 			continue;
 		} else if(isascii(character)) {
 			sprintf(nowword,"%s%c",nowword,character);
 			printf("%s\n",nowword);
-			if(strcmp(nowword,word)==0) {
-				*count=*count+1;
-			}
 		}
 	}
 	fclose(fin);
