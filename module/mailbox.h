@@ -16,17 +16,22 @@
 #define ERR_FULL -2
 
 struct mailbox_head_t {
-	/*
-	 * some structure members you define
-	 */
-	struct list_head head;
+    /*
+     * some structure members you define
+     */
+    struct list_head head;
 };
 
 struct mailbox_entry_t {
-	/*
-	 * some structure members you define
-	 */
-	struct list_head entry;
+    /*
+     * some structure members you define
+     */
+    union{
+        char query_word[32];
+        unsigned int word_count;
+    }data
+    char file_path[4096];
+    struct list_head entry;
 };
 
 #endif

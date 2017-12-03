@@ -5,7 +5,7 @@ int main(int argc, char **argv)
 	printf("slave start ...\n");
 	//while(1) {};
 	char path[4096]="../testdir/apple.txt";
-	char word[32]="apple";
+	char word[32]="APPLE";
 	int word_count=0;
 	int * count;
 	count = &word_count;
@@ -32,7 +32,7 @@ void Searchword(char path[],char word[],unsigned int *count)
 		character = tolower(character);
 		if(character== ' ' || character== '\n' || character== '\t'|| character=='.'
 		   || character==','||character == '!'|| character=='?') {
-			if(strcmp(nowword,word)==0) {
+			if(strcmp(nowword,lower)==0) {
 				*count=*count+1;
 			}
 			memset(nowword,'\0',sizeof(nowword));
