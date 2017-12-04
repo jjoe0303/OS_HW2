@@ -6,8 +6,8 @@ int main(int argc, char **argv)
 	//while(1) {};
 	char path[4096]="../testdir/apple.txt";
 	char word[32]="APPLE";
-	int word_count=0;
-	int * count;
+	unsigned int word_count=0;
+	unsigned int *count;
 	count = &word_count;
 	printf("path=%s,word=%s\n",path,word);
 	Searchword(path,word,count);
@@ -39,7 +39,7 @@ void Searchword(char path[],char word[],unsigned int *count)
 			continue;
 		} else if(isascii(character)) {
 			sprintf(nowword,"%s%c",nowword,character);
-			printf("%s\n",nowword);
+//			printf("%s\n",nowword);
 		}
 	}
 	fclose(fin);

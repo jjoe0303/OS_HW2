@@ -30,7 +30,8 @@ static ssize_t mailbox_read(struct kobject *kobj,
 static ssize_t mailbox_write(struct kobject *kobj,
                              struct kobj_attribute *attr, const char *buf, size_t count)
 {
-	return ERR_FULL;
+    printk("Buffer=%s\n",buf);
+    return ERR_FULL;
 }
 
 static int __init mailbox_init(void)
