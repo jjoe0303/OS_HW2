@@ -61,7 +61,7 @@ int main(int argc, char **argv)
 	while(1) {
 		scanf("%s",&k[0]);
 		if(strcmp(k,"s")==0) {
-            printf("Send message...\n");
+			printf("Send message...\n");
 			send_to_fd(sysfs_fd,mail);
 		}
 
@@ -70,7 +70,7 @@ int main(int argc, char **argv)
 			for(i=0; i<num; ++i) {
 				kill(pid[i],SIGTERM);
 			}
-            printf("Killed!!\n");
+			printf("Killed!!\n");
 		}
 	}
 
@@ -123,7 +123,7 @@ int send_to_fd(int sysfs_fd, struct mail_t *mail)
 	 * write something or nothing
 	 */
 	sysfs_fd=open("/sys/kernel/hw2/mailbox",O_RDWR);
-    printf("sysfs_fd=%d\n",sysfs_fd);
+	printf("sysfs_fd=%d\n",sysfs_fd);
 	char *d= "hello world!";
 	int ret_val = write(sysfs_fd,d,strlen(d));
 //	int ret_val = write(sysfs_fd,mail,sizeof(struct mail_t));
