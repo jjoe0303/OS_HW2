@@ -32,7 +32,9 @@ static ssize_t mailbox_read(struct kobject *kobj,
 	//struct mailbox_entry_t *getmail = (struct mailbox_entry_t *)kmalloc(sizeof(struct mailbox_entry_t),GFP_KERNEL);
 	//getmail=MailboxHead.head.next;
 	//char *message = list_entry(MailboxHead.head.next,)
-	sprintf(buf,"%s","Hello~world!!");
+    struct mailbox_entry_t *get;
+    get = container_of(MailboxHead.head.next,struct mailbox_entry_t,entry);
+	sprintf(buf,"%s",get->message);
 	num_entry=num_entry-1;
 	printk("Receive:%s\n",buf);
 	list_del(MailboxHead.head.next);

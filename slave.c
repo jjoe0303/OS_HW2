@@ -10,16 +10,17 @@ int main(int argc, char **argv)
 	int *mailsize;
 	int size=0;
 	int sysfs_fd=0;
-	sysfs_fd=open("/sys/kernel/hw2/mailbox",O_RDWR);
+	//sysfs_fd=open("/sys/kernel/hw2/mailbox",O_RDWR);
 	printf("slave's sysfs_fd=%d\n",sysfs_fd);
 	unsigned int word_count=0;
 	unsigned int *count;
 	count = &word_count;
-	//    while(1){
+	    while(1){
 	//Searchword(path,word,count);
 	//printf("path=%s,word=%s\n",mail.path,word);
 	receive_from_fd(sysfs_fd,&mail);
-	//  }
+    sleep(3);
+	  }
 	printf("count=%d\n",word_count);
 	return 0;
 }
@@ -82,6 +83,7 @@ int receive_from_fd(int sysfs_fd, struct mail_t *mail)
 	/*
 	 * write something or nothing
 	 */
+	sysfs_fd=open("/sys/kernel/hw2/mailbox",O_RDWR);
 	char message[4128];
 	char *delim=",";
 	memset(message,'\0',sizeof(message));
