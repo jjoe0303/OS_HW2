@@ -20,9 +20,9 @@ struct mailbox_head_t {
 	/*
 	 * some structure members you define
 	 */
-    char message[4128];
+	char message[4128];
 	struct list_head head;
-}MailboxHead;
+} MailboxHead;
 
 struct mailbox_entry_t {
 	/*
@@ -33,7 +33,7 @@ struct mailbox_entry_t {
 //		unsigned int word_count;
 //	} data;
 	//char file_path[4096];
-    char message[4128];
+	char message[4128];
 	struct list_head entry;
 };
 

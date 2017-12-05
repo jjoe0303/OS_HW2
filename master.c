@@ -58,14 +58,14 @@ int main(int argc, char **argv)
 			execl("./slave","slave","executed by execl",NULL);
 		}
 	}
-    sysfs_fd=open("/sys/kernel/hw2/mailbox",O_RDWR);
+	sysfs_fd=open("/sys/kernel/hw2/mailbox",O_RDWR);
 	while(1) {
 		scanf("%s",&k[0]);
 		if(strcmp(k,"s")==0) {
 			printf("Send message...\n");
-            for(i=0;i<size;++i){
-			    send_to_fd(sysfs_fd,&mail[i]);
-            }
+			for(i=0; i<size; ++i) {
+				send_to_fd(sysfs_fd,&mail[i]);
+			}
 		}
 
 
@@ -126,8 +126,8 @@ int send_to_fd(int sysfs_fd, struct mail_t *mail)
 	 * write something or nothing
 	 */
 //	printf("sysfs_fd=%d\n",sysfs_fd);
-    char message[4128];
-    sprintf(message,"%s,%s",(*mail).data.query_word,(*mail).file_path);
+	char message[4128];
+	sprintf(message,"%s,%s",(*mail).data.query_word,(*mail).file_path);
 
 //	char *d= "hello world!";
 //	int ret_val = write(sysfs_fd,d,strlen(d));
