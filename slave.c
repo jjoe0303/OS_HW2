@@ -15,12 +15,12 @@ int main(int argc, char **argv)
 	unsigned int word_count=0;
 	unsigned int *count;
 	count = &word_count;
-	    while(1){
-	//Searchword(path,word,count);
-	//printf("path=%s,word=%s\n",mail.path,word);
-	receive_from_fd(sysfs_fd,&mail);
-    sleep(3);
-	  }
+	while(1) {
+		//Searchword(path,word,count);
+		//printf("path=%s,word=%s\n",mail.path,word);
+		receive_from_fd(sysfs_fd,&mail);
+		sleep(3);
+	}
 	printf("count=%d\n",word_count);
 	return 0;
 }
