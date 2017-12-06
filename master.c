@@ -45,10 +45,9 @@ int main(int argc, char **argv)
 	int *mailsize;
 	int size = 0;
 	int sysfs_fd=0;
-	int sid[num];
+//	int sid[num];
 	int *status;
 	mailsize = &size;
-	totalcount=0;
 	ConstructMail(dirname,mail,word,mailsize);
 //	printf("size=%d\n",size);
 //	for(i=0; i<size; i++) {
@@ -59,8 +58,8 @@ int main(int argc, char **argv)
 	for(i=0; i<num; ++i) {
 		pid[i]=fork();
 		if(pid[i]==0) {
-			sid[i]=getpid();
-//			printf("slave pid[%d]=%d , my parentid=%d\n",i,getpid(),getppid());
+			//sid[i]=getpid();
+		//	printf("slave pid[%d]=%d , my parentid=%d\n",i,sid[i],getppid());
 			execl("./slave","slave","executed by execl",NULL);
 		}
 		// printf("slave pid[%d]=%d\n",i,getpid());
@@ -70,40 +69,39 @@ int main(int argc, char **argv)
 	//i=0;
 //	scanf("%s",&k[0]);
 	int key=0;
-	// sleep(2);
 	while(!key) {
 		//scanf("%s",&k[0]);
 		if(signals==0) { //send stage
 //			printf("Send message...\n");
 			send_to_fd(sysfs_fd,&mail[realsize]);
-			usleep(1); //here need to sleep
+//			usleep(1); //here need to sleep
 		}
 
 		if(signals==1) {
 //			printf("Wakeup slave...");
 			for(i=0; i<num; ++i) {
-				kill(sid[i],SIGCONT);
-				//printf("haha\n");
+				kill(pid[i],SIGCONT);
 			}
 			// sleep(1);
 //			printf("OK\n");
 
 //			printf("wait for slave read...");
 			for(i=0; i<num; ++i) {
-				waitpid(sid[i],WIFSTOPPED(status),WUNTRACED);
+				waitpid(pid[i],WIFSTOPPED(status),WUNTRACED);
 			}
 			// sleep(2);
 //			printf("ok\n");
 
 //			printf("Wakeup slave...");
 			for(i=0; i<num; ++i) {
-				kill(sid[i],SIGCONT);
+				kill(pid[i],SIGCONT);
 			}
 //			printf("ok\n");
 
 //			printf("wait for slave write...");
 			for(i=0; i<num; ++i) {
-				waitpid(sid[i],WIFSTOPPED(status),WUNTRACED);
+				waitpid(pid[i],WIFSTOPPED(status),WUNTRACED);
+                //printf("sid[%d]=%d write finished!\n",i,pid[i]);
 			}
 			//sleep(2);
 //			printf("ok\n");
@@ -116,7 +114,7 @@ int main(int argc, char **argv)
 
 		if(signals==3) { //read stage
 			for(i=0; i<num; ++i) {
-				kill(sid[i],SIGCONT);
+				kill(pid[i],SIGCONT);
 			}
 			signals=0;
 //			printf("realsize=%d\n",realsize);
@@ -130,9 +128,9 @@ int main(int argc, char **argv)
 //			}
 //			printf("Killed!!\n");
 //		}
-		//	sleep(1);  //here cause error!!
+			usleep(1);  //here cause error!!
 	}
-	sleep(3);
+//	sleep(3);
 	for(i=0; i<num; ++i) {
 		kill(pid[i],SIGTERM);
 	}
@@ -239,6 +237,7 @@ int receive_from_fd(int sysfs_fd, struct mail_t *mail)
 		unsigned int localcount=atoi(substr[0]);
 //        sleep(1);
 		totalcount=totalcount+localcount;
+        printf("localcount=%u , totalcount=%u\n",localcount,totalcount);
 	}
 	return 0;
 
