@@ -24,13 +24,20 @@ int main(int argc, char **argv)
 		}
 
 		if(signals==1) {
-			Searchword(mail[mailsize-1].file_path,mail[mailsize-1].data.query_word,count);
-			printf("count=%d\n",word_count);
+            if(mailsize-1>=0){
+			    Searchword(mail[mailsize-1].file_path,mail[mailsize-1].data.query_word,count);
+            }
+            printf("count=%d, path=%s\n",word_count,mail[mailsize-1].file_path);
 			mail[mailsize-1].data.word_count = word_count;
-			send_to_fd(sysfs_fd,&mail[mailsize]);
+			send_to_fd(sysfs_fd,&mail[mailsize-1]);
 			word_count=0;
-			signals=0;
+			//signals=0;
 		}
+
+        if(signals==2){
+	        kill(getpid(),SIGSTOP);
+            signals=0;
+        }
 	}
 	return 0;
 }
@@ -73,9 +80,9 @@ int send_to_fd(int sysfs_fd, struct mail_t *mail)
 	sprintf(message,"%u,%s",(*mail).data.word_count,(*mail).file_path);
 	printf("count message:%s\n",message);
 	int ret_val =  write(sysfs_fd,message,strlen(message));
-	if (ret_val == ERR_FULL) {
+	if (ret_val < 0) {
 		kill(getpid(),SIGSTOP);
-		signals=0;
+		signals=2;
 	} else {
 		mailsize=mailsize-1;
 	}
