@@ -33,8 +33,8 @@ struct mailbox_entry_t {
 //		unsigned int word_count;
 //	} data;
 	//char file_path[4096];
-    spinlock_t lock;
-    char message[4128];
+	spinlock_t lock;
+	char message[4128];
 	struct list_head entry;
 };
 
