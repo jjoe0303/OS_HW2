@@ -49,7 +49,7 @@ int main(int argc, char **argv)
 	}
 	realsize=0;
 	int key=0;
-    signals=0;
+	signals=0;
 	while(!key) {
 		if(signals==0) { //send stage
 			send_to_fd(sysfs_fd,&mail[realsize]);
