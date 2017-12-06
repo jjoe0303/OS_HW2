@@ -70,7 +70,7 @@ int main(int argc, char **argv)
 	//i=0;
 //	scanf("%s",&k[0]);
 	int key=0;
-   // sleep(2);
+	// sleep(2);
 	while(!key) {
 		//scanf("%s",&k[0]);
 		if(signals==0) { //send stage
@@ -83,16 +83,16 @@ int main(int argc, char **argv)
 //			printf("Wakeup slave...");
 			for(i=0; i<num; ++i) {
 				kill(sid[i],SIGCONT);
-                //printf("haha\n");
+				//printf("haha\n");
 			}
-           // sleep(1);
+			// sleep(1);
 //			printf("OK\n");
 
 //			printf("wait for slave read...");
 			for(i=0; i<num; ++i) {
 				waitpid(sid[i],WIFSTOPPED(status),WUNTRACED);
 			}
-           // sleep(2);
+			// sleep(2);
 //			printf("ok\n");
 
 //			printf("Wakeup slave...");
@@ -105,7 +105,7 @@ int main(int argc, char **argv)
 			for(i=0; i<num; ++i) {
 				waitpid(sid[i],WIFSTOPPED(status),WUNTRACED);
 			}
-            //sleep(2);
+			//sleep(2);
 //			printf("ok\n");
 			signals=2;
 		}
@@ -130,9 +130,9 @@ int main(int argc, char **argv)
 //			}
 //			printf("Killed!!\n");
 //		}
-	//	sleep(1);  //here cause error!!
+		//	sleep(1);  //here cause error!!
 	}
-    sleep(3);
+	sleep(3);
 	for(i=0; i<num; ++i) {
 		kill(pid[i],SIGTERM);
 	}
@@ -161,14 +161,14 @@ void ConstructMail(char dirname[],struct mail_t mail[],char word[],
 			continue;
 		else if(filename->d_type != 4) {
 			sprintf(mail[*mailsize].file_path,"%s%s",dirname,filename->d_name);
-	//		printf("mailsize=%d , filepath=%s\n",*mailsize,mail[*mailsize].file_path);
+			//		printf("mailsize=%d , filepath=%s\n",*mailsize,mail[*mailsize].file_path);
 			sprintf(mail[*mailsize].data.query_word,"%s",word);
 			*mailsize=*mailsize+1;
 		} else if(filename->d_type == 4) {
 			//memset(base,'\0',sizeof(base));
 			sprintf(subdir,"%s",dirname);
 			sprintf(subdir,"%s%s/",subdir,filename->d_name);
-	//		printf("subdir=%s\n",subdir);
+			//		printf("subdir=%s\n",subdir);
 			ConstructMail(subdir,mail,word,mailsize);
 			// printf("%s\n",base);
 		}
