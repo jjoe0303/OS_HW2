@@ -59,7 +59,7 @@ int main(int argc, char **argv)
 		pid[i]=fork();
 		if(pid[i]==0) {
 			//sid[i]=getpid();
-		//	printf("slave pid[%d]=%d , my parentid=%d\n",i,sid[i],getppid());
+			//	printf("slave pid[%d]=%d , my parentid=%d\n",i,sid[i],getppid());
 			execl("./slave","slave","executed by execl",NULL);
 		}
 		// printf("slave pid[%d]=%d\n",i,getpid());
@@ -101,7 +101,7 @@ int main(int argc, char **argv)
 //			printf("wait for slave write...");
 			for(i=0; i<num; ++i) {
 				waitpid(pid[i],WIFSTOPPED(status),WUNTRACED);
-                //printf("sid[%d]=%d write finished!\n",i,pid[i]);
+				//printf("sid[%d]=%d write finished!\n",i,pid[i]);
 			}
 			//sleep(2);
 //			printf("ok\n");
@@ -128,7 +128,7 @@ int main(int argc, char **argv)
 //			}
 //			printf("Killed!!\n");
 //		}
-			usleep(1);  //here cause error!!
+		usleep(1);  //here cause error!!
 	}
 //	sleep(3);
 	for(i=0; i<num; ++i) {
@@ -237,7 +237,7 @@ int receive_from_fd(int sysfs_fd, struct mail_t *mail)
 		unsigned int localcount=atoi(substr[0]);
 //        sleep(1);
 		totalcount=totalcount+localcount;
-        printf("localcount=%u , totalcount=%u\n",localcount,totalcount);
+		printf("localcount=%u , totalcount=%u\n",localcount,totalcount);
 	}
 	return 0;
 
