@@ -41,14 +41,14 @@ int main(int argc, char **argv)
 	int i;
 	char k[20];
 	struct  mail_t mail[1024];
-   // struct  mail_t buffer[1024];
+	// struct  mail_t buffer[1024];
 	int *mailsize;
 	int size = 0;
 	int sysfs_fd=0;
 	int sid[num];
 	int *status;
 	mailsize = &size;
-    totalcount=0;
+	totalcount=0;
 	ConstructMail(dirname,mail,word,mailsize);
 	printf("size=%d\n",size);
 	for(i=0; i<size; i++) {
@@ -69,7 +69,7 @@ int main(int argc, char **argv)
 	//	sysfs_fd=open("/sys/kernel/hw2/mailbox",O_RDWR);
 	//i=0;
 //	scanf("%s",&k[0]);
-    int key=0;
+	int key=0;
 	while(!key) {
 		//scanf("%s",&k[0]);
 		if(signals==0) { //send stage
@@ -79,43 +79,43 @@ int main(int argc, char **argv)
 		}
 
 		if(signals==1) {
-            printf("Wakeup slave...");
+			printf("Wakeup slave...");
 			for(i=0; i<num; ++i) {
 				kill(sid[i],SIGCONT);
 			}
-            printf("OK\n");
+			printf("OK\n");
 
-            printf("wait for slave read...");
+			printf("wait for slave read...");
 			for(i=0; i<num; ++i) {
 				waitpid(sid[i],WIFSTOPPED(status),WUNTRACED);
 			}
-            printf("ok\n");
+			printf("ok\n");
 
-            printf("Wakeup slave...");
+			printf("Wakeup slave...");
 			for(i=0; i<num; ++i) {
 				kill(sid[i],SIGCONT);
 			}
-            printf("ok\n");
+			printf("ok\n");
 
-            printf("wait for slave write...");
+			printf("wait for slave write...");
 			for(i=0; i<num; ++i) {
 				waitpid(sid[i],WIFSTOPPED(status),WUNTRACED);
 			}
-            printf("ok\n");
+			printf("ok\n");
 			signals=2;
 		}
 
 		if(signals==2) { //read stage
-            receive_from_fd(sysfs_fd,&mail[0]);
+			receive_from_fd(sysfs_fd,&mail[0]);
 		}
 
 		if(signals==3) { //read stage
-           for(i=0; i<num; ++i) {
+			for(i=0; i<num; ++i) {
 				kill(sid[i],SIGCONT);
 			}
-           signals=0;
-           printf("realsize=%d\n",realsize);
-           if(realsize==size) key=1;
+			signals=0;
+			printf("realsize=%d\n",realsize);
+			if(realsize==size) key=1;
 		}
 
 
@@ -128,10 +128,10 @@ int main(int argc, char **argv)
 //		sleep(1);
 	}
 	for(i=0; i<num; ++i) {
-	    kill(pid[i],SIGTERM);
+		kill(pid[i],SIGTERM);
 	}
 	printf("Killed!!\n");
-    printf("The total number of query word \"%s\" is %u\n",word,totalcount);
+	printf("The total number of query word \"%s\" is %u\n",word,totalcount);
 	return 0;
 
 }
@@ -188,7 +188,7 @@ int send_to_fd(int sysfs_fd, struct mail_t *mail)
 	//	char *d= "hello world!";
 	//	int ret_val = write(sysfs_fd,d,strlen(d));
 	int ret_val = write(sysfs_fd,message,strlen(message));
-    printf("ret_val=%d\n",ret_val);
+	printf("ret_val=%d\n",ret_val);
 	if (ret_val < 0) {
 		/*
 		 * write something or nothing
@@ -219,22 +219,22 @@ int receive_from_fd(int sysfs_fd, struct mail_t *mail)
 	char *delim=",";
 	char *substr[2];
 	char *pch;
-    int i=0;
-    memset(message,'\0',sizeof(message));
+	int i=0;
+	memset(message,'\0',sizeof(message));
 
 	int ret_val = read(sysfs_fd,message,4128);
 	if (ret_val == ERR_EMPTY) {
-	    signals=3;        
+		signals=3;
 	} else {
-        printf("master receive:%s\n",message);
-	    pch=strtok(message,delim);
-        while(pch!=NULL){
-            substr[i++]=pch;
-            pch=strtok(NULL,delim);
-        }
-        unsigned int localcount=atoi(substr[0]);
-        totalcount=totalcount+localcount;
+		printf("master receive:%s\n",message);
+		pch=strtok(message,delim);
+		while(pch!=NULL) {
+			substr[i++]=pch;
+			pch=strtok(NULL,delim);
+		}
+		unsigned int localcount=atoi(substr[0]);
+		totalcount=totalcount+localcount;
 	}
-    return 0;
-	
+	return 0;
+
 }

@@ -24,20 +24,20 @@ int main(int argc, char **argv)
 		}
 
 		if(signals==1) {
-            if(mailsize-1>=0){
-			    Searchword(mail[mailsize-1].file_path,mail[mailsize-1].data.query_word,count);
-            }
-            printf("count=%d, path=%s\n",word_count,mail[mailsize-1].file_path);
+			if(mailsize-1>=0) {
+				Searchword(mail[mailsize-1].file_path,mail[mailsize-1].data.query_word,count);
+			}
+			printf("count=%d, path=%s\n",word_count,mail[mailsize-1].file_path);
 			mail[mailsize-1].data.word_count = word_count;
 			send_to_fd(sysfs_fd,&mail[mailsize-1]);
 			word_count=0;
 			//signals=0;
 		}
 
-        if(signals==2){
-	        kill(getpid(),SIGSTOP);
-            signals=0;
-        }
+		if(signals==2) {
+			kill(getpid(),SIGSTOP);
+			signals=0;
+		}
 	}
 	return 0;
 }
