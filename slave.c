@@ -24,8 +24,10 @@ int main(int argc, char **argv)
 		}
 
 		if(signals==1) {
-			Searchword(mail.file_path,mail.data.query_word,count);
+			Searchword(mail[mailsize-1].file_path,mail[mailsize-1].data.query_word,count);
 			printf("count=%d\n",word_count);
+            mail[mailsize-1].data.word_count = word_count;
+            send_to_fd(sysfs_fd,&mail[mailsize]);
 			word_count=0;
 			signals=0;
 		}
@@ -66,13 +68,14 @@ void Searchword(char path[],char word[],unsigned int *count)
 
 int send_to_fd(int sysfs_fd, struct mail_t *mail)
 {
-
 	sysfs_fd=open("/sys/kernel/hw2/mailbox",O_RDWR);
 	char message[4128];
+    sprintf(message,"%u,%s",(*mail).data.word_count,(*mail).file_path);
+    printf("count message:%s\n",message);
 	int ret_val =  write(sysfs_fd,message,strlen(message));
 	if (ret_val == ERR_FULL) {
 		kill(getpid(),SIGSTOP);
-		signals=2;
+		signals=0;
 	} else {
 		mailsize=mailsize-1;
 	}
@@ -80,9 +83,6 @@ int send_to_fd(int sysfs_fd, struct mail_t *mail)
 
 int receive_from_fd(int sysfs_fd, struct mail_t *mail)
 {
-	/*
-	 * write something or nothing
-	 */
 	sysfs_fd=open("/sys/kernel/hw2/mailbox",O_RDWR);
 	char message[4128];
 	char *delim=",";
@@ -94,30 +94,19 @@ int receive_from_fd(int sysfs_fd, struct mail_t *mail)
 	int ret_val = read(sysfs_fd,message,4128);
 
 	if (ret_val == ERR_EMPTY) {
-		/*
-		 * write something or nothing
-		 */
 		kill(getpid(),SIGSTOP);
 		signals=1;
-	} else {
-		/*
-		 * write something or nothing
-		 */
+	} 
+    else {
 		mailsize=mailsize+1;
 		pch=strtok(message,delim);
 		while(pch!=NULL) {
 			substr[i++]=pch;
-			//printf("pch=%s\n",pch);
-			pch=strtok(NULL,delim);
+	    	pch=strtok(NULL,delim);
 		}
 		printf("word=%s , path=%s\n",substr[0],substr[1]);
 		sprintf((*mail).data.query_word,"%s",substr[0]);
 		sprintf((*mail).file_path,"%s",substr[1]);
-		// signals=1;
-//        kill(getpid(),STOP);
 	}
-	/*
-	 * write something or nothing
-	 */
 	return 0;
 }
