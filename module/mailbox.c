@@ -32,12 +32,15 @@ static ssize_t mailbox_read(struct kobject *kobj,
 	//struct mailbox_entry_t *getmail = (struct mailbox_entry_t *)kmalloc(sizeof(struct mailbox_entry_t),GFP_KERNEL);
 	//getmail=MailboxHead.head.next;
 	//char *message = list_entry(MailboxHead.head.next,)
-	struct mailbox_entry_t *get;
-	get = container_of(MailboxHead.head.next,struct mailbox_entry_t,entry);
-	sprintf(buf,"%s",get->message);
-	num_entry=num_entry-1;
-	printk("Receive:%s\n",buf);
-	list_del(MailboxHead.head.next);
+   
+	    struct mailbox_entry_t *get;
+        spin_lock(&get->lock);
+        get = container_of(MailboxHead.head.next,struct mailbox_entry_t,entry);
+	    sprintf(buf,"%s",get->message);
+	    num_entry=num_entry-1;
+	    printk("%d:Receive:%s\n",num_entry,buf);
+	    list_del(MailboxHead.head.next);
+        spin_unlock(&get->lock);
 	return strlen(buf);
 }
 
@@ -46,7 +49,8 @@ static ssize_t mailbox_write(struct kobject *kobj,
 {
 	struct mailbox_entry_t *newmail;
 	if(num_entry==num_entry_max) {
-		return ERR_FULL;
+        printk("is Full!! loss message:%s\n",buf);
+        return ERR_FULL;
 	}
 	newmail = (struct mailbox_entry_t *)kmalloc(sizeof(struct mailbox_entry_t),
 	          GFP_KERNEL);
@@ -54,7 +58,7 @@ static ssize_t mailbox_write(struct kobject *kobj,
 	list_add(&((*newmail).entry),&(MailboxHead.head));
 	num_entry=num_entry+1;
 	printk("%d:message:%s\n",num_entry,(*newmail).message);
-	return 0;
+	return strlen(buf);
 }
 
 static int __init mailbox_init(void)

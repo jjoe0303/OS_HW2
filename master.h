@@ -5,5 +5,6 @@
 
 void ConstructMail(char dirname[],struct mail_t mail[],char word[],
                    int *mailsize);
-
+static int realsize=0;
+static int signals=0;
 #endif
