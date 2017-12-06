@@ -87,17 +87,17 @@ int main(int argc, char **argv)
 			for(i=0; i<num; ++i) {
 				kill(sid[i],SIGCONT);
 			}
-			
-            for(i=0; i<num; ++i) {
+
+			for(i=0; i<num; ++i) {
 				waitpid(sid[i],WIFSTOPPED(status),WUNTRACED);
 			}
-            signals=2;
+			signals=2;
 		}
-	
-        if(signals==2){//read stage
-        
-        
-        }
+
+		if(signals==2) { //read stage
+
+
+		}
 
 		if(strcmp(k,"kill")==0) {
 			for(i=0; i<num; ++i) {
@@ -187,28 +187,28 @@ int send_to_fd(int sysfs_fd, struct mail_t *mail)
 
 int receive_from_fd(int sysfs_fd, struct mail_t *mail)
 {
-    /*
-     * write something or nothing
-     */
-    sysfs_fd=open("/sys/kernel/hw2/mailbox",O_RDWR);
-    char message[4128];
-    char *delim=",";
-    char *substr[2];
-    char *pch;
+	/*
+	 * write something or nothing
+	 */
+	sysfs_fd=open("/sys/kernel/hw2/mailbox",O_RDWR);
+	char message[4128];
+	char *delim=",";
+	char *substr[2];
+	char *pch;
 
-    int ret_val = read(sysfs_fd, ...);
-    if (ret_val == ERR_EMPTY) {
-        /*
-         * write something or nothing
-         */
+	int ret_val = read(sysfs_fd, ...);
+	if (ret_val == ERR_EMPTY) {
+		/*
+		 * write something or nothing
+		 */
 
-    } else {
-        /*
-         * write something or nothing
-         */
-    }
+	} else {
+		/*
+		 * write something or nothing
+		 */
+	}
 
-    /*
-     * write something or nothing
-     */
+	/*
+	 * write something or nothing
+	 */
 }
