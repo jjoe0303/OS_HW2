@@ -11,7 +11,6 @@
 #include <linux/kobject.h>
 #include <linux/fs.h>
 #include <linux/spinlock_types.h>
-#include <linux/rwlock_types.h>
 #include <linux/slab.h>
 
 #define ERR_EMPTY -1

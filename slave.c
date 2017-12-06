@@ -15,6 +15,7 @@ int main(int argc, char **argv)
 	unsigned int word_count=0;
 	unsigned int *count;
 	count = &word_count;
+    signals=0;
 	kill(getpid(),SIGSTOP);
 	while(1) {
 		//Searchword(path,word,count);
@@ -28,14 +29,22 @@ int main(int argc, char **argv)
 				Searchword(mail[mailsize-1].file_path,mail[mailsize-1].data.query_word,count);
 			}
 			//		printf("count=%d, path=%s\n",word_count,mail[mailsize-1].file_path);
-			mail[mailsize-1].data.word_count = word_count;
-			send_to_fd(sysfs_fd,&mail[mailsize-1]);
-			word_count=0;
-			//signals=0;
+            if(strcmp(mail[mailsize-1].file_path,"")!=0){
+			    mail[mailsize-1].data.word_count = word_count;    
+                send_to_fd(sysfs_fd,&mail[mailsize-1]);
+			    word_count=0;
+            }
+         
+            else{
+                usleep(30);
+			    mail[mailsize-1].data.word_count = word_count;    
+                send_to_fd(sysfs_fd,&mail[mailsize-1]);
+            }
 		}
 
 		if(signals==2) {
 			kill(getpid(),SIGSTOP);
+            mailsize=0;
 			signals=0;
 		}
 	}
@@ -121,6 +130,8 @@ int receive_from_fd(int sysfs_fd, struct mail_t *mail)
 		}
 		if(strcmp(message,",")==0) {
 //            printf("null message\n");
+		    sprintf((*mail).data.query_word,"%s","0");
+		    sprintf((*mail).file_path,"%s","");
 			return 0;
 		}
 		//	printf("pid=%d word=%s , path=%s\n",getpid(),substr[0],substr[1]);
