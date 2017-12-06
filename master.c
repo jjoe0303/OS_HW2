@@ -5,7 +5,7 @@ int main(int argc, char **argv)
 	int ch;
 	char ec;
 	char word[32];
-	char dirname[2048];
+	char dirname[4096];
 	char slaves[1024];
 	sprintf(slaves,"%s","2");
 	while((ch = getopt(argc, argv, ":q:d:s:")) != -1) {
@@ -13,7 +13,7 @@ int main(int argc, char **argv)
 		case 'q':
 			//word = optarg;
 			sprintf(word,"%s",optarg);
-			printf("Query_word=%s\n",word);
+//			printf("Query_word=%s\n",word);
 			break;
 		case 'd':
 			//dirname = optarg;
@@ -21,7 +21,7 @@ int main(int argc, char **argv)
 			if(dirname[strlen(dirname)-1] != '/') {
 				sprintf(dirname,"%s%c",dirname,'/');
 			}
-			printf("Directory=%s\n",dirname);
+//			printf("Directory=%s\n",dirname);
 			break;
 		case 's':
 			sprintf(slaves,"%s",optarg);
@@ -35,11 +35,11 @@ int main(int argc, char **argv)
 			break;
 		}
 	}
-	printf("Num of slaves=%s\n", slaves);
+//	printf("Num of slaves=%s\n", slaves);
 	int num = atoi(slaves);
 	int pid[num];
 	int i;
-	char k[20];
+//	char k[20];
 	struct  mail_t mail[1024];
 	// struct  mail_t buffer[1024];
 	int *mailsize;
@@ -50,17 +50,17 @@ int main(int argc, char **argv)
 	mailsize = &size;
 	totalcount=0;
 	ConstructMail(dirname,mail,word,mailsize);
-	printf("size=%d\n",size);
-	for(i=0; i<size; i++) {
-		printf("%d:\n",i);
-		printf("\t%s\n",mail[i].data.query_word);
-		printf("\t%s\n",mail[i].file_path);
-	}
+//	printf("size=%d\n",size);
+//	for(i=0; i<size; i++) {
+//		printf("%d:\n",i);
+//		printf("\t%s\n",mail[i].data.query_word);
+//		printf("\t%s\n",mail[i].file_path);
+//	}
 	for(i=0; i<num; ++i) {
 		pid[i]=fork();
 		if(pid[i]==0) {
 			sid[i]=getpid();
-			//printf("slave pid[%d]=%d , my parentid=%d\n",i,getpid(),getppid());
+//			printf("slave pid[%d]=%d , my parentid=%d\n",i,getpid(),getppid());
 			execl("./slave","slave","executed by execl",NULL);
 		}
 		// printf("slave pid[%d]=%d\n",i,getpid());
@@ -70,38 +70,43 @@ int main(int argc, char **argv)
 	//i=0;
 //	scanf("%s",&k[0]);
 	int key=0;
+   // sleep(2);
 	while(!key) {
 		//scanf("%s",&k[0]);
 		if(signals==0) { //send stage
-			printf("Send message...\n");
+//			printf("Send message...\n");
 			send_to_fd(sysfs_fd,&mail[realsize]);
-			sleep(1);
+			usleep(1); //here need to sleep
 		}
 
 		if(signals==1) {
-			printf("Wakeup slave...");
+//			printf("Wakeup slave...");
 			for(i=0; i<num; ++i) {
 				kill(sid[i],SIGCONT);
+                //printf("haha\n");
 			}
-			printf("OK\n");
+           // sleep(1);
+//			printf("OK\n");
 
-			printf("wait for slave read...");
+//			printf("wait for slave read...");
 			for(i=0; i<num; ++i) {
 				waitpid(sid[i],WIFSTOPPED(status),WUNTRACED);
 			}
-			printf("ok\n");
+           // sleep(2);
+//			printf("ok\n");
 
-			printf("Wakeup slave...");
+//			printf("Wakeup slave...");
 			for(i=0; i<num; ++i) {
 				kill(sid[i],SIGCONT);
 			}
-			printf("ok\n");
+//			printf("ok\n");
 
-			printf("wait for slave write...");
+//			printf("wait for slave write...");
 			for(i=0; i<num; ++i) {
 				waitpid(sid[i],WIFSTOPPED(status),WUNTRACED);
 			}
-			printf("ok\n");
+            //sleep(2);
+//			printf("ok\n");
 			signals=2;
 		}
 
@@ -114,8 +119,8 @@ int main(int argc, char **argv)
 				kill(sid[i],SIGCONT);
 			}
 			signals=0;
-			printf("realsize=%d\n",realsize);
-			if(realsize==size) key=1;
+//			printf("realsize=%d\n",realsize);
+			if(realsize>=size) key=1;
 		}
 
 
@@ -125,12 +130,13 @@ int main(int argc, char **argv)
 //			}
 //			printf("Killed!!\n");
 //		}
-//		sleep(1);
+	//	sleep(1);  //here cause error!!
 	}
+    sleep(3);
 	for(i=0; i<num; ++i) {
 		kill(pid[i],SIGTERM);
 	}
-	printf("Killed!!\n");
+//	printf("Killed!!\n");
 	printf("The total number of query word \"%s\" is %u\n",word,totalcount);
 	return 0;
 
@@ -144,8 +150,6 @@ void ConstructMail(char dirname[],struct mail_t mail[],char word[],
 	DIR * dir = opendir(dirname);
 	struct dirent *filename;
 	char subdir[2048];
-	//char base[1000];
-	//memset(base,'\0',sizeof(base));
 	if((dir=opendir(dirname)) == NULL) {
 		perror("Open dir error...");
 		exit(1);
@@ -157,14 +161,14 @@ void ConstructMail(char dirname[],struct mail_t mail[],char word[],
 			continue;
 		else if(filename->d_type != 4) {
 			sprintf(mail[*mailsize].file_path,"%s%s",dirname,filename->d_name);
-			printf("mailsize=%d , filepath=%s\n",*mailsize,mail[*mailsize].file_path);
+	//		printf("mailsize=%d , filepath=%s\n",*mailsize,mail[*mailsize].file_path);
 			sprintf(mail[*mailsize].data.query_word,"%s",word);
 			*mailsize=*mailsize+1;
 		} else if(filename->d_type == 4) {
 			//memset(base,'\0',sizeof(base));
 			sprintf(subdir,"%s",dirname);
 			sprintf(subdir,"%s%s/",subdir,filename->d_name);
-			printf("subdir=%s\n",subdir);
+	//		printf("subdir=%s\n",subdir);
 			ConstructMail(subdir,mail,word,mailsize);
 			// printf("%s\n",base);
 		}
@@ -188,7 +192,7 @@ int send_to_fd(int sysfs_fd, struct mail_t *mail)
 	//	char *d= "hello world!";
 	//	int ret_val = write(sysfs_fd,d,strlen(d));
 	int ret_val = write(sysfs_fd,message,strlen(message));
-	printf("ret_val=%d\n",ret_val);
+	//printf("ret_val=%d\n",ret_val);
 	if (ret_val < 0) {
 		/*
 		 * write something or nothing
@@ -226,13 +230,14 @@ int receive_from_fd(int sysfs_fd, struct mail_t *mail)
 	if (ret_val == ERR_EMPTY) {
 		signals=3;
 	} else {
-		printf("master receive:%s\n",message);
+//		printf("master receive:%s\n",message);
 		pch=strtok(message,delim);
 		while(pch!=NULL) {
 			substr[i++]=pch;
 			pch=strtok(NULL,delim);
 		}
 		unsigned int localcount=atoi(substr[0]);
+//        sleep(1);
 		totalcount=totalcount+localcount;
 	}
 	return 0;

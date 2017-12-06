@@ -6,7 +6,7 @@ int main(int argc, char **argv)
 	//while(1) {};
 	//char path[4096]="../testdir/apple.txt";
 	//char word[32]="APPLE";
-	struct mail_t mail[100];
+	struct mail_t mail[1024];
 	//int *mailsize;
 	//int size=0;
 	int sysfs_fd=-1;
@@ -21,13 +21,13 @@ int main(int argc, char **argv)
 		//printf("path=%s,word=%s\n",mail.path,word);
 		if(signals==0) {
 			receive_from_fd(sysfs_fd,&mail[mailsize]);
-		}
+        }
 
 		if(signals==1) {
 			if(mailsize-1>=0) {
 				Searchword(mail[mailsize-1].file_path,mail[mailsize-1].data.query_word,count);
 			}
-			printf("count=%d, path=%s\n",word_count,mail[mailsize-1].file_path);
+	//		printf("count=%d, path=%s\n",word_count,mail[mailsize-1].file_path);
 			mail[mailsize-1].data.word_count = word_count;
 			send_to_fd(sysfs_fd,&mail[mailsize-1]);
 			word_count=0;
@@ -51,9 +51,13 @@ void Searchword(char path[],char word[],unsigned int *count)
 	}
 	FILE *fin;
 	char character;
-	char nowword[20];
+	char nowword[1000];
 	memset(nowword,'\0',sizeof(nowword));
 	fin = fopen(path,"r");
+    if(fin==NULL){
+        printf("No such file~\n");
+        return;
+    }
 	//printf("yaya\n");
 	while(fscanf(fin,"%c",&character)!=EOF) {
 		character = tolower(character);
@@ -66,7 +70,7 @@ void Searchword(char path[],char word[],unsigned int *count)
 			continue;
 		} else if(isascii(character)) {
 			sprintf(nowword,"%s%c",nowword,character);
-			//			printf("%s\n",nowword);
+//						printf("%s\n",nowword);
 		}
 	}
 	fclose(fin);
@@ -78,11 +82,11 @@ int send_to_fd(int sysfs_fd, struct mail_t *mail)
 	sysfs_fd=open("/sys/kernel/hw2/mailbox",O_RDWR);
 	char message[4128];
 	sprintf(message,"%u,%s",(*mail).data.word_count,(*mail).file_path);
-	printf("count message:%s\n",message);
+	//printf("count message:%s\n",message);
 	int ret_val =  write(sysfs_fd,message,strlen(message));
 	if (ret_val < 0) {
-		kill(getpid(),SIGSTOP);
 		signals=2;
+		kill(getpid(),SIGSTOP);
 	} else {
 		mailsize=mailsize-1;
 	}
@@ -102,15 +106,24 @@ int receive_from_fd(int sysfs_fd, struct mail_t *mail)
 
 	if (ret_val == ERR_EMPTY) {
 		kill(getpid(),SIGSTOP);
+//        printf("EMPTY\n");
 		signals=1;
 	} else {
+     /*   if(message==NULL){
+            printf("null message!!\n");
+            return 0;
+        }*/
 		mailsize=mailsize+1;
 		pch=strtok(message,delim);
 		while(pch!=NULL) {
 			substr[i++]=pch;
 			pch=strtok(NULL,delim);
 		}
-		printf("word=%s , path=%s\n",substr[0],substr[1]);
+        if(strcmp(message,",")==0){
+//            printf("null message\n");
+            return 0; 
+        }
+	//	printf("pid=%d word=%s , path=%s\n",getpid(),substr[0],substr[1]);
 		sprintf((*mail).data.query_word,"%s",substr[0]);
 		sprintf((*mail).file_path,"%s",substr[1]);
 	}

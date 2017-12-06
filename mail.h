@@ -14,6 +14,7 @@
 #include <ctype.h>
 #include <fcntl.h>
 
+
 struct mail_t {
 	union {
 		char query_word[32];
