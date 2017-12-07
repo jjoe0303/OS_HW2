@@ -39,7 +39,6 @@ static ssize_t mailbox_read(struct kobject *kobj,
 	//struct mailbox_entry_t *getmail = (struct mailbox_entry_t *)kmalloc(sizeof(struct mailbox_entry_t),GFP_KERNEL);
 	//getmail=MailboxHead.head.next;
 	//char *message = list_entry(MailboxHead.head.next,)
-
 	spin_lock_irqsave(&my_lock,flags);
 	get = container_of(MailboxHead.head.next,struct mailbox_entry_t,entry);
 	sprintf(buf,"%s",get->message);
@@ -59,8 +58,7 @@ static ssize_t mailbox_write(struct kobject *kobj,
 		return ERR_FULL;
 	}
 	spin_lock_irqsave(&my_lock,flags);
-	newmail = (struct mailbox_entry_t *)kmalloc(sizeof(struct mailbox_entry_t),
-	          GFP_KERNEL);
+	newmail = (struct mailbox_entry_t *)kmalloc(sizeof(struct mailbox_entry_t),GFP_KERNEL);
 	sprintf((*newmail).message,"%s",buf);
 	list_add(&((*newmail).entry),&(MailboxHead.head));
 	num_entry=num_entry+1;

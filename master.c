@@ -56,13 +56,13 @@ int main(int argc, char **argv)
 		}
 
 		if(signals==1) {
-			for(i=0; i<num; ++i) {
+			for(i=0; i<num; ++i) { //wake up slaves to read
 				kill(pid[i],SIGCONT);
 			}
-			for(i=0; i<num; ++i) {
+			for(i=0; i<num; ++i) { //when slaves stop read
 				waitpid(pid[i],WIFSTOPPED(status),WUNTRACED);
 			}
-			for(i=0; i<num; ++i) {
+			for(i=0; i<num; ++i) { //wake up slaves to write
 				kill(pid[i],SIGCONT);
 			}
 			for(i=0; i<num; ++i) {
@@ -79,8 +79,7 @@ int main(int argc, char **argv)
 		}
 
 		if(signals==2) { //read stage
-
-			receive_from_fd(sysfs_fd,&mail[0]);
+	   		receive_from_fd(sysfs_fd,&mail[0]);
 		}
 
 		if(signals==3) { //read stage
