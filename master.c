@@ -75,7 +75,7 @@ int main(int argc, char **argv)
 //				waitpid(pid[i],WIFSTOPPED(status),WUNTRACED);
 //			}
 			signals=2;
-            usleep(200);
+			usleep(200);
 		}
 
 		if(signals==2) { //read stage
