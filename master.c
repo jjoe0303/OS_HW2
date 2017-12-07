@@ -68,6 +68,12 @@ int main(int argc, char **argv)
 			for(i=0; i<num; ++i) {
 				waitpid(pid[i],WIFSTOPPED(status),WUNTRACED);
 			}
+			for(i=0; i<num; ++i) {
+				kill(pid[i],SIGCONT);
+			}
+			for(i=0; i<num; ++i) {
+				waitpid(pid[i],WIFSTOPPED(status),WUNTRACED);
+			}
 			signals=2;
 		}
 

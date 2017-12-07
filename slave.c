@@ -11,10 +11,12 @@ int main(int argc, char **argv)
 	unsigned int *count;
 	count = &word_count;
 	signals=0;
-	kill(getpid(),SIGSTOP);
 	struct mail_t nullmail;
 	sprintf(nullmail.data.query_word,"%s","");
 	nullmail.data.word_count = 0;
+    int countsize;
+	kill(getpid(),SIGSTOP);
+    usleep(100);
 	while(1) {
 		//Searchword(path,word,count);
 		//printf("path=%s,word=%s\n",mail.path,word);
@@ -23,7 +25,8 @@ int main(int argc, char **argv)
 		}
 
 		if(signals==1) {
-			for(int j=mailsize-1; j>=0; j--) {
+            countsize=mailsize;
+			for(int j=countsize-1; j>=0; j--) {
 				//   if(mailsize-1>=0) {
 				//	    Searchword(mail[mailsize-1].file_path,mail[mailsize-1].data.query_word,count);
 				//   }
@@ -36,6 +39,7 @@ int main(int argc, char **argv)
 				}
 			}
 			signals=3;
+            kill(getpid(),SIGSTOP);
 		}
 
 		if(signals==3) {
@@ -117,6 +121,7 @@ int receive_from_fd(int sysfs_fd, struct mail_t *mail)
 
 	if (ret_val == ERR_EMPTY) {
 		kill(getpid(),SIGSTOP);
+        usleep(10);
 		//        printf("EMPTY\n");
 		signals=1;
 	} else {
@@ -132,7 +137,7 @@ int receive_from_fd(int sysfs_fd, struct mail_t *mail)
 			sprintf((*mail).file_path,"%s","");
 			return 0;
 		}
-		//	printf("pid=%d word=%s , path=%s\n",getpid(),substr[0],substr[1]);
+			printf("pid=%d word=%s , path=%s\n",getpid(),substr[0],substr[1]);
 		sprintf((*mail).data.query_word,"%s",substr[0]);
 		sprintf((*mail).file_path,"%s",substr[1]);
 	}
