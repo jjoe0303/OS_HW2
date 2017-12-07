@@ -30,14 +30,16 @@ int main(int argc, char **argv)
 			if(mailsize==0 || countsize==0) {
 				kill(getpid(),SIGSTOP);
 				signals=2;
+                continue;
 			}
 //			for(int j=0; j<countsize; j++) {
 			if(countsize-1>=0) {
 				Searchword(mail[countsize-1].file_path,mail[countsize-1].data.query_word,count);
 			}
 			//Searchword(mail[j].file_path,mail[j].data.query_word,count);
-			if(strcmp(mail[countsize-1].file_path,"")!=0 && word_count!=0) {
 				printf("count=%d, path=%s\n",word_count,mail[countsize-1].file_path);
+			if(strcmp(mail[countsize-1].file_path,"")!=0 && word_count!=0) {
+//				printf("count=%d, path=%s\n",word_count,mail[countsize-1].file_path);
 				mail[countsize-1].data.word_count = word_count;
 				send_to_fd(sysfs_fd,&mail[countsize-1]);
 				word_count=0;
@@ -56,7 +58,7 @@ int main(int argc, char **argv)
 		}
 
 		if(signals==3) {
-			usleep(30);
+			//usleep(30);
 			send_to_fd(sysfs_fd,&nullmail);
 		}
 
@@ -89,7 +91,7 @@ void Searchword(char path[],char word[],unsigned int *count)
 	while(fscanf(fin,"%c",&character)!=EOF) {
 		character = tolower(character);
 		if(character== ' ' || character== '\n' || character== '\t'|| character=='.'
-		   || character==','||character == '!'|| character=='?') {
+		   || character==','||character == '!'|| character=='?' ||character=='(' || character == ')' || character == '[' || character == ']') {
 			if(strcmp(nowword,lower)==0) {
 				*count=*count+1;
 			}
@@ -115,6 +117,7 @@ int send_to_fd(int sysfs_fd, struct mail_t *mail)
 		if(signals==3) {
 			signals=2;
 		}
+        return 0;
 		//kill(getpid(),SIGSTOP);
 	} else {
 		mailsize=mailsize-1;
@@ -139,6 +142,7 @@ int receive_from_fd(int sysfs_fd, struct mail_t *mail)
 		usleep(10);
 		//        printf("EMPTY\n");
 		signals=1;
+        return 0;
 	} else {
 		mailsize=mailsize+1;
 		pch=strtok(message,delim);
