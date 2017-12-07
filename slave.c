@@ -22,30 +22,38 @@ int main(int argc, char **argv)
 		//printf("path=%s,word=%s\n",mail.path,word);
 		if(signals==0) {
 			receive_from_fd(sysfs_fd,&mail[mailsize]);
+	        countsize=mailsize;
 		}
 
 		if(signals==1) {
-			countsize=mailsize;
-			for(int j=countsize-1; j>=0; j--) {
-				//   if(mailsize-1>=0) {
-				//	    Searchword(mail[mailsize-1].file_path,mail[mailsize-1].data.query_word,count);
-				//   }
-				//		printf("count=%d, path=%s\n",word_count,mail[mailsize-1].file_path);
-				Searchword(mail[j].file_path,mail[j].data.query_word,count);
-				if(strcmp(mail[j].file_path,"")!=0 && word_count!=0) {
-					mail[j].data.word_count = word_count;
-					send_to_fd(sysfs_fd,&mail[j]);
+//			for(int j=0; j<countsize; j++) {
+				   if(countsize-1>=0) {
+					    Searchword(mail[countsize-1].file_path,mail[countsize-1].data.query_word,count);
+				   }
+					printf("count=%d, path=%s\n",word_count,mail[countsize-1].file_path);
+				//Searchword(mail[j].file_path,mail[j].data.query_word,count);
+				if(strcmp(mail[countsize-1].file_path,"")!=0 && word_count!=0) {
+					mail[countsize-1].data.word_count = word_count;
+					send_to_fd(sysfs_fd,&mail[countsize-1]);
 					word_count=0;
+                    countsize--;
 				}
-			}
-			signals=3;
-			kill(getpid(),SIGSTOP);
+
+                else{
+                    usleep(50);
+                    countsize--;
+					//mail[mailsize].data.word_count = 0;
+					send_to_fd(sysfs_fd,&nullmail);
+                }
+//			}
+			//signals=3;
+			//kill(getpid(),SIGSTOP);
 		}
 
-		if(signals==3) {
-			usleep(30);
-			send_to_fd(sysfs_fd,&nullmail);
-		}
+	//	if(signals==3) {
+	//		usleep(30);
+	//		send_to_fd(sysfs_fd,&nullmail);
+	//	}
 
 		if(signals==2) {
 			kill(getpid(),SIGSTOP);
