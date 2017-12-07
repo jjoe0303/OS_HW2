@@ -34,7 +34,7 @@ int main(int argc, char **argv)
 	int num = atoi(slaves);
 	int pid[num];
 	int i;
-	struct  mail_t mail[1024];
+	struct  mail_t mail[2000];
 	int *mailsize;
 	int size = 0;
 	int sysfs_fd=0;
