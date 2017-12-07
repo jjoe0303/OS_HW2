@@ -40,13 +40,13 @@ static ssize_t mailbox_read(struct kobject *kobj,
 	//getmail=MailboxHead.head.next;
 	//char *message = list_entry(MailboxHead.head.next,)
 
-    spin_lock_irqsave(&my_lock,flags);
+	spin_lock_irqsave(&my_lock,flags);
 	get = container_of(MailboxHead.head.next,struct mailbox_entry_t,entry);
 	sprintf(buf,"%s",get->message);
 	num_entry=num_entry-1;
 	printk("%d:Receive:%s\n",num_entry,buf);
 	list_del(MailboxHead.head.next);
-    spin_unlock_irqrestore(&my_lock,flags);
+	spin_unlock_irqrestore(&my_lock,flags);
 	return strlen(buf);
 }
 
