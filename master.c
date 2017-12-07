@@ -79,7 +79,7 @@ int main(int argc, char **argv)
 		}
 
 		if(signals==2) { //read stage
-	   		receive_from_fd(sysfs_fd,&mail[0]);
+			receive_from_fd(sysfs_fd,&mail[0]);
 		}
 
 		if(signals==3) { //read stage
