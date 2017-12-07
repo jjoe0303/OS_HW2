@@ -140,6 +140,7 @@ int send_to_fd(int sysfs_fd, struct mail_t *mail)
 	} else {
 		realsize=realsize+1;
 	}
+    return 0;
 }
 
 int receive_from_fd(int sysfs_fd, struct mail_t *mail)
