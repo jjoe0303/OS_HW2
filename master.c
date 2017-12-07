@@ -56,20 +56,20 @@ int main(int argc, char **argv)
 		}
 
 		if(signals==1) {
-            usleep(1000);
+			usleep(1000);
 			for(i=0; i<num; ++i) { //wake up slaves to read
 				kill(pid[i],SIGCONT);
 			}
 			for(i=0; i<num; ++i) { //when slaves stop read
 				waitpid(pid[i],WIFSTOPPED(status),WUNTRACED);
-                printf("slave[%d]...read ok\n",pid[i]);
+				printf("slave[%d]...read ok\n",pid[i]);
 			}
 			for(i=0; i<num; ++i) { //wake up slaves to write
 				kill(pid[i],SIGCONT);
 			}
 			for(i=0; i<num; ++i) {
 				waitpid(pid[i],WIFSTOPPED(status),WUNTRACED);
-                printf("slave[%d]...write ok\n",pid[i]);
+				printf("slave[%d]...write ok\n",pid[i]);
 			}
 //			for(i=0; i<num; ++i) {
 //				kill(pid[i],SIGCONT);
